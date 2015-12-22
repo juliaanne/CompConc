@@ -36,3 +36,5 @@ CMakeLists.txt
 main.cpp
 senoSequencial
 senoSequencial.exe
+linearSequencial
+linearSequencial.exe

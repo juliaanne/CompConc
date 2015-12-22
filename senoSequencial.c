@@ -8,7 +8,6 @@
 // Valor definido de 0 a 2
 double valorReal = 0.804776;
 
-
 // Função seno
 double calcula_funcao(double x){
   return sin(x*x);
