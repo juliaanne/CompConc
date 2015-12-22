@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
-//#include "time.h"
+//#include "timer.h"
 #include <math.h>
 
 double valorReal = 0.804776; // de 0 a 2
