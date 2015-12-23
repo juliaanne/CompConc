@@ -5,13 +5,12 @@
 #include "timer.h"
 #include <math.h>
 
-// Valor definido de 0 a 10
-double valorReal = 1.5708;
+// Valor definido de 0 a 5
+double valorReal = 42.8027;
 
-// Função seno
-sqrt(1+(pow(x,4)))
+// Função exponencial
 double calcula_funcao(double x){
-    return sqrt(1-(x*x));
+    return sqrt(1+(pow(x,4)));
 }
 
 // Calculo da integral
