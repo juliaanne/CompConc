@@ -5,13 +5,12 @@
 #include "timer.h"
 #include <math.h>
 
-
 // Valor definido de 0 a 5
-double valorReal = 42.8027;
+double valorReal = 5.54053;
 
-// Função exponencial
+// Função elefante
 double calcula_funcao(double x){
-    return sqrt(1+(pow(x,4)));
+    return cos(pow(M_E,-x)) * ((0.005 *(pow(x,3))) +1);
 }
 
 // Calculo da integral

@@ -9,7 +9,6 @@
 double valorReal = 1.5708;
 
 // Função seno
-sqrt(1+(pow(x,4)))
 double calcula_funcao(double x){
     return sqrt(1-(x*x));
 }
