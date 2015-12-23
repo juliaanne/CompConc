@@ -8,7 +8,7 @@
 // Valor definido de 0 a 10
 double valorReal = 60.00;
 
-// Função seno
+// Função linear
 double calcula_funcao(double x){
     return 1+x;
 }

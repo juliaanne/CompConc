@@ -8,7 +8,7 @@
 // Valor definido de -1 a 1
 double valorReal = 1.5708;
 
-// Função seno
+// Função parabola
 double calcula_funcao(double x){
     return sqrt(1-(x*x));
 }
