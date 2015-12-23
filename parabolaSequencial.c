@@ -5,7 +5,7 @@
 #include "timer.h"
 #include <math.h>
 
-// Valor definido de 0 a 10
+// Valor definido de -1 a 1
 double valorReal = 1.5708;
 
 // Função seno
