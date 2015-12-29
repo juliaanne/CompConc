@@ -75,32 +75,6 @@ void separa_responsabilidade(threadInfo* d){
     return;
 }
 
-void * thread_controle(void * arg){
-    while(erroIteracaoAtual >  erroMaximo ){
-        // Calcula o tamanho da partição no iteração atual
-        tamanhoParticao = ((a-b)/nParticoesIteracao);
-
-        // Libera as outras threads para calcularem a integral na iteração atual
-        pthread_cond_broadcast(&cond);        
-
-        // Aguarda elas sinalizarem que terminaram de calcular
-        pthread_cond_wait(&cond_controle,&mutex);
-
-        // Atualiza o valor do erro com base no valor da nova integral
-        erroIteracaoAtual = resultadoIntegral - resultadoParcial;
-
-        // Atualiza o valor da integral com o novo valor.
-        resultadoIntegral = resultadoParcial;
-
-        // Duplica o número de partições para a próxima iteração.
-        nParticoesIteracao = 2 * nParticoesIteracao;                
-    }
-
-
-    free(arg);
-    pthread_exit(NULL);
-}
-
 
 // Calcula a inicio do intervalo de integraçao de uma partição
 double calcula_inicio_intervalo(int particao){
@@ -121,10 +95,43 @@ double calcula_fim_intervalo(int particao){
 }
 
 
+// Thread de controle das outras threads
+void * thread_controle(void * arg){
+    printf("Criou a thread de [controle] \n");
+
+    while(erroIteracaoAtual >  erroMaximo ){
+        // Calcula o tamanho da partição no iteração atual
+        tamanhoParticao = ((a-b)/nParticoesIteracao);
+
+        // Libera as outras threads para calcularem a integral na iteração atual
+        printf("Libera as threads para calcula_integral\n");
+        pthread_cond_broadcast(&cond);        
+
+        // Aguarda elas sinalizarem que terminaram de calcular
+        printf("Thread de [controle] aguardando as threasd de integral sinalizarem\n");
+        pthread_cond_wait(&cond_controle,&mutex);
+
+        // Atualiza o valor do erro com base no valor da nova integral
+        erroIteracaoAtual = resultadoIntegral - resultadoParcial;
+
+        // Atualiza o valor da integral com o novo valor.
+        resultadoIntegral = resultadoParcial;
+
+        // Duplica o número de partições para a próxima iteração.
+        nParticoesIteracao = 2 * nParticoesIteracao;                
+    }
+
+
+    free(arg);
+    pthread_exit(NULL);
+}
+
+
 // Threads que calculam a integral
 void * threads_integral(void * arg){
     threadInfo* dados = (threadInfo*) arg;
 
+    printf("Criou a thread de [integral] [%d]\n", dados->pid);
     int i;
     double integralLocal = 0;
     double localA;
@@ -135,6 +142,7 @@ void * threads_integral(void * arg){
     while(flagFinaliza){
         
         // Aguarda a thread de controle sinalizar que devem começar outra iteração.
+        printf("Thread %d se travou esperando liberação da thread de controle\n", dados->pid);
         pthread_cond_wait(&cond,&mutex);
         integralLocal = 0; 
         
@@ -224,6 +232,7 @@ int main(int argc, char *argv[]){
         if(pthread_create(&threads[i], NULL, threads_integral, (void *) dados)){
             printf("--ERRO: pthread_create()\n"); exit(-1);
         }
+ 
     }
 
     //Cria a primeira thread separadamente, pois é a thread de controle
@@ -232,9 +241,11 @@ int main(int argc, char *argv[]){
             printf("--ERRO: malloc() em thread controle\n"); exit(-1);
     }
     *pid = 0;
-    if(pthread_create(&threads[0], NULL, threads_integral, (void *) pid)){
+    if(pthread_create(&threads[0], NULL, thread_controle, (void *) pid)){
         printf("--ERRO: pthread_create() na thread de controle\n"); exit(-1);
     }
+
+    
 
     // Espera as threads terminarem
     for (i=0; i<nthreads + 1; i++) {
