@@ -105,6 +105,7 @@ void * thread_controle(void * arg){
 
         // Libera as outras threads para calcularem a integral na iteração atual
         printf("Libera as threads para calcula_integral\n");
+        sleep(1);
         pthread_cond_broadcast(&cond);        
 
         // Aguarda elas sinalizarem que terminaram de calcular
@@ -121,6 +122,7 @@ void * thread_controle(void * arg){
         nParticoesIteracao = 2 * nParticoesIteracao;                
     }
 
+    flagFinaliza = 0;
 
     free(arg);
     pthread_exit(NULL);
@@ -169,18 +171,18 @@ void * threads_integral(void * arg){
                 }            
             }
         }
+ 
         pthread_mutex_lock(&mutex);    
         //Atualiza o resultado parcial com a parte que foi calculada por essa thread
         resultadoParcial += integralLocal;  
-
+ 
         // Atualiza o contador de threads da iteração atual
         threadsExecutadasNaIteracao++;
         pthread_mutex_unlock(&mutex);
-
+ 
         if(threadsExecutadasNaIteracao == nParticoesIteracao){
             pthread_cond_signal(&cond_controle);
-        }
-        
+        }   
     }
 
     free(arg);
