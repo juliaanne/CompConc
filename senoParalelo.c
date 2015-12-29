@@ -6,14 +6,16 @@
 #include <math.h>
 #include <float.h>
 
-double a, b, erroMaximo, resultadoIntegral;
+double a, b, erroMaximo, resultadoIntegral,resultadoParcial;
 double erroDaIteracaoAtual = DBL_MAX;
 
 int nthreads;
 int nParticoesIteracao = 1;
 
+int flagFinaliza = 1;
+
 pthread_mutex_t mutex;
-pthread_cond_t cond;
+pthread_cond_t cond,cond_controle;
 
 typedef struct t{
     int pid;
@@ -85,26 +87,40 @@ void * thread_controle(void * arg){
         mutex_cond_broadcast(&cond);        
 
         // Aguarda elas sinalizarem que terminaram de calcular
-        mutex_cond_wait(&cond);
+        mutex_cond_wait(&cond_controle);
 
         // Atualiza o valor do erro com base no valor da nova integral
-        erroIteracaoAtual = resultadoIntegral - integralLocal;
+        erroIteracaoAtual = resultadoIntegral - resultadoParcial;
 
         // Atualiza o valor da integral com o novo valor.
-        resultadoIntegral = integralLocal;
+        resultadoIntegral = resultadoParcial;
 
         // Duplica o número de partições para a próxima iteração.
         nParticoesIteracao = 2 * nParticoesIteracao;                
     }
+
 
     free(arg);
     pthread_exit(NULL);
 }
 
 
+// Calcula a inicio do intervalo de integraçao de uma partição
+double calcula_inicio_intervalo(int particao){
+    double inicio = 0;
 
-double calculo_inicio_intervalo(int particao){
-    
+    inicio = a + ((particao - 1) * tamanhoParticao) );
+
+    return inicio;
+}
+
+// Calcula o fim do intervalo de integraçao de uma partição
+double calcula_fim_intervalo(int particao){
+    double fim = 0;
+
+    fim = a + (particao * tamanhoParticao) );
+
+    return fim;
 }
 
 
@@ -117,10 +133,12 @@ void * threads_integral(void * arg){
     double localA;
     double localB;
 
-    // Aguarda a thread de controle sinalizar que devem começar outra iteração.
-    mutex_cond_wait(&cond); 
+    
 
-    while(erroIteracaoAtual >  erroMaximo ){
+    while(flagFinaliza){
+        
+        // Aguarda a thread de controle sinalizar que devem começar outra iteração.
+        mutex_cond_wait(&cond); 
         
         printf("Thread [%d] entrou no loop while\n", pid );
 
@@ -128,27 +146,31 @@ void * threads_integral(void * arg){
         separa_responsabilidade(dados);
 
         // Calcula o valor da integral só para o intervalo responsável da thread nesta iteração
-        for(i = intervaloInicio ; i <= intervaloFim; i++){ 
-            localA = (tamanhoParticao * (intervaloInicio - 1)) + tamanhoParticao;
-            localB = (tamanhoParticao * particaoId) + tamanhoParticao;               
+        for(i = dados->particaoInicial ; i <= dados->particaoFinal; i++){ 
+            localA = calcula_inicio_intervalo(i);
+            localB = calcula_fim_intervalo(i);
             integralLocal += calcula_integral(localA,localB);
         }
+
+        // Caso a thead seja responsável por calcular a parte extra
+        if(dados->particaoExtraInicial > 0 ){
+            for(i = dados->particaoExtraInicial ; i <= dados->particaoExtraFinal; i++){ 
+                localA = calcula_inicio_intervalo(i);
+                localB = calcula_fim_intervalo(i);
+                integralLocal += calcula_integral(localA,localB);
+            }            
+        }
+
         pthread_mutex_lock(&mutex);    
-        resultadoIntegral += integralLocal;  
+        //Atualiza o resultado parcial com a parte que foi calculada por essa thread
+        resultadoParcial += integralLocal;  
+
+        // Atualiza o contador de threads da iteração atual
         quantasThreadsJaCalcularaNaIteracaoAtual++;
         pthread_mutex_unlock(&mutex);
 
         if(quantasThreadsJaCalcularaNaIteracaoAtual == nParticoesIteracao){
-            erroDaIteracaoAtual = valorReal - resultadoIntegral;
-            nParticoesIteracao = 2 * nParticoesIteracao;    
-            if(erroDaIteracaoAtual > erroMaximo  ){
-                resultadoIntegral = 0;
-            }else{
-                break;
-            }
-            pthread_cond_broadcast(&cond);
-        }else{
-            pthread_cond_wait(&cond,&mutex);
+            pthread_cond_signal(&cond_controle);
         }
         
     }
