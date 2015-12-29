@@ -9,7 +9,7 @@
 double a, b, erroMaximo, resultadoIntegral,resultadoParcial,tamanhoParticao;
 double erroIteracaoAtual = DBL_MAX;
 
-int nthreads;
+int nthreads,threadTravadas;
 int nParticoesIteracao = 1;
 int threadsExecutadasNaIteracao = 0;
 int flagFinaliza = 1;
@@ -101,11 +101,17 @@ void * thread_controle(void * arg){
 
     while(erroIteracaoAtual >  erroMaximo ){
         // Calcula o tamanho da partição no iteração atual
-        tamanhoParticao = ((a-b)/nParticoesIteracao);
+        tamanhoParticao = ((b-a)/nParticoesIteracao);
+
+        // Duplica o número de partições para a próxima iteração.
+        nParticoesIteracao = 2 * nParticoesIteracao;
 
         // Libera as outras threads para calcularem a integral na iteração atual
         printf("Libera as threads para calcula_integral\n");
-        sleep(1);
+        
+        while(threadTravadas < 4){
+            printf("Esperando as threads se travarem\n");
+        }
         pthread_cond_broadcast(&cond);        
 
         // Aguarda elas sinalizarem que terminaram de calcular
@@ -117,9 +123,7 @@ void * thread_controle(void * arg){
 
         // Atualiza o valor da integral com o novo valor.
         resultadoIntegral = resultadoParcial;
-
-        // Duplica o número de partições para a próxima iteração.
-        nParticoesIteracao = 2 * nParticoesIteracao;                
+                
     }
 
     flagFinaliza = 0;
@@ -139,17 +143,20 @@ void * threads_integral(void * arg){
     double localA;
     double localB;
 
-    
-
     while(flagFinaliza){
-        
+
         // Aguarda a thread de controle sinalizar que devem começar outra iteração.
         printf("Thread %d se travou esperando liberação da thread de controle\n", dados->pid);
+        pthread_mutex_lock(&mutex);
+        threadTravadas++;
+        printf("threadas travadas %d \n",threadTravadas);
+        pthread_mutex_unlock(&mutex);
+
         pthread_cond_wait(&cond,&mutex);
         integralLocal = 0; 
         
         printf("Thread [%d] entrou no loop while\n", dados->pid );
-
+        break;
         //Nesta função as partições que a thread tem que calcular são atualizadas.
         separa_responsabilidade(dados);
 
@@ -184,7 +191,7 @@ void * threads_integral(void * arg){
             pthread_cond_signal(&cond_controle);
         }   
     }
-
+    printf("Thread [%d] saiu do while\n",dados->pid);
     free(arg);
     pthread_exit(NULL);
 }
@@ -250,7 +257,7 @@ int main(int argc, char *argv[]){
     
 
     // Espera as threads terminarem
-    for (i=0; i<nthreads + 1; i++) {
+    for (i=0; i< (nthreads + 1); i++) {
         if (pthread_join(threads[i], NULL)) {
             printf("--ERRO: pthread_join() \n"); exit(-1);
         }
