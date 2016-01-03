@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
     valor = calcula_integral(a, b, erroMaximo, 1);
 
     // Saída do programa
-    printf("O valor da integral de seno de %f até %f é: %f \n", a, b, valor);
+    printf("O valor da integral de exponencial de %f até %f é: %f \n", a, b, valor);
 
     return 0;
 }
