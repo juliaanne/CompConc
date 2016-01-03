@@ -55,11 +55,22 @@ int main(int argc, char *argv[]){
     b = atof(argv[2]);
     erroMaximo = atof(argv[3]);
 
+    // Validando os limites de integração
+    if(a < -1 || a > 1){
+        printf("Limite inferior deve estar entre 1 e -1\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if(b < -1 || b > 1){
+        printf("Limite superior deve estar entre 1 e -1\n");
+        exit(EXIT_FAILURE);
+    }
+
     // Chamando método da quadratura
     valor = calcula_integral(a, b, erroMaximo, 1);
 
     // Saída do programa
-    printf("O valor da integral de seno de %f até %f é: %f \n", a, b, valor);
+    printf("O valor da integral de parabola de %f até %f é: %f \n", a, b, valor);
 
     return 0;
 }
