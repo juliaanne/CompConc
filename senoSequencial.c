@@ -5,8 +5,8 @@
 #include "timer.h"
 #include <math.h>
 
-// Valor definido de 0 a 2
-double valorReal = 0.804776;
+// Valor para comparação ao erro
+double integralAnterior = 0;
 
 // Função seno
 double calcula_funcao(double x){
@@ -27,13 +27,13 @@ double calcula_integral(double a, double b, double erroMaximo, int nparticoes){
     limiteInferior+=intervalo;
   }
 
-  //printf("Integral : %f \n ",integral);
-  //sleep(1);
-  erroParcial = fabs(valorReal-integral);
+  // Calculo do erro
+  erroParcial = fabs(integralAnterior-integral);
 
   // Verificando se o erro desta iteração é aceitável
   // Cálculo recursivo caso não seja aceitável
   if(erroParcial>erroMaximo){
+    integralAnterior = integral;
     integral = calcula_integral(a, b, erroMaximo, nparticoes*2);
   }
         
