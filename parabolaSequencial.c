@@ -17,24 +17,41 @@ double calcula_funcao(double x){
 double calcula_integral(double a, double b, double erroMaximo, int nparticoes){
     int i;
     double erroParcial, integral=0;
-    double intervalo = ((b-a)/nparticoes);
+    double intervalo = (b-a);
     double limiteInferior = a;
 
-    // Calculando o valor da integral
-    for(i=0; i<nparticoes; i++){
-        // Calculo do valor de cada npartição
-        integral += intervalo * calcula_funcao((limiteInferior + (limiteInferior+intervalo))/2);
-        limiteInferior+=intervalo;
-    }
+    integral = intervalo * calcula_funcao((limiteInferior + (limiteInferior + intervalo)) / 2);
+    erroParcial = fabs(integralAnterior - integral);
 
-    // Calculo do erro
-    erroParcial = fabs(integralAnterior-integral);
+    // Descomentar linhas abaixo para ver passo a passo
+    //printf("Erro Parcial: %f\n", erroParcial );
+    //printf("Integral Anterior: %f\n", integralAnterior);
+    //printf("Integral Atual: %f\n\n", integral );
 
-    // Verificando se o erro desta iteração é aceitável
-    // Cálculo recursivo caso não seja aceitável
-    if(erroParcial>erroMaximo){
-        integralAnterior =i ntegral;
-        integral = calcula_integral(a, b, erroMaximo, nparticoes*2);
+    while(erroParcial>erroMaximo) {
+        // Atualizando valores
+        integralAnterior = integral;
+        integral=0;
+        limiteInferior = a;
+        nparticoes = nparticoes*2;
+
+        // Calculando tamanho do intervalo
+        intervalo = ((b-a)/nparticoes);
+
+        // Calculando o valor da integral
+        for (i = 0; i < nparticoes; i++) {
+            // Calculo do valor de cada npartição
+            integral += intervalo * calcula_funcao((limiteInferior + (limiteInferior + intervalo)) / 2);
+            limiteInferior += intervalo;
+        }
+
+        // Calculo do erro
+        erroParcial = fabs(integralAnterior - integral);
+
+        // Descomentar linhas abaixo para ver passo a passo
+        //printf("Erro Parcial: %f\n", erroParcial );
+        //printf("Integral Anterior: %f\n", integralAnterior);
+        //printf("Integral Atual: %f\n\n", integral );
     }
 
     return integral;
@@ -54,6 +71,16 @@ int main(int argc, char *argv[]){
     a = atof(argv[1]);
     b = atof(argv[2]);
     erroMaximo = atof(argv[3]);
+
+    if(a < -1 || a > 1){
+        printf("Limite inferior deve ser entre 1 e -1 \n");
+        exit(EXIT_FAILURE);
+    }
+
+    if(b < -1 || b > 1){
+        printf("Limite superior deve ser entre 1 e -1 \n");
+        exit(EXIT_FAILURE);
+    }
 
     // Chamando método da quadratura
     valor = calcula_integral(a, b, erroMaximo, 1);
