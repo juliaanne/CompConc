@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <math.h>
 #include <float.h>
+#include "timer.h"
 
 pthread_mutex_t mutex;
 pthread_cond_t cond_barreira;
@@ -211,9 +212,13 @@ void valida_threads(int nthreads){
 
 
 int main(int argc, char *argv[]){
+    double inicio, fim, tempoInicializacao, tempoExecucao;
     pthread_t* threads;
     int i;
     int* pid;
+
+    //---------------------------------------------------------------- Parte 1: Inicialização
+    GET_TIME(inicio);
 
     // Validando a entrada
     valida_entrada(argc,argv);
@@ -257,6 +262,14 @@ int main(int argc, char *argv[]){
     // Calcula o tamanho de cada intervalo de integração
     tamanhoParticao = (b - a)/nparticoes;
 
+
+    GET_TIME(fim);
+    tempoInicializacao = fim - inicio;
+
+
+    //---------------------------------------------------------------- Parte 1: Execucão
+    GET_TIME(inicio);
+
     // Criando as threads
     for (i= 0; i < nthreads; i++) {
         pid = malloc(sizeof(int));
@@ -280,7 +293,13 @@ int main(int argc, char *argv[]){
         }
     }
 
+    GET_TIME(fim);
+    tempoExecucao = fim - inicio;
+
     printf("Resultado integral de linear é: %f\n", resultadoIntegral);
+    printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
+    printf("Tempo de execução é: %.8lf\n", tempoExecucao);
+    printf("Tempo total é: %.8lf\n", tempoExecucao+tempoInicializacao);
 
     return 0;
 }

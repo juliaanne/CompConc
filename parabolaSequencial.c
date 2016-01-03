@@ -42,7 +42,11 @@ double calcula_integral(double a, double b, double erroMaximo, int nparticoes){
 
 
 int main(int argc, char *argv[]){
+    double inicio, fim, tempoInicializacao, tempoExecucao;
     double a, b, erroMaximo,valor;
+
+    //---------------------------------------------------------------- Parte 1: Inicialização
+    GET_TIME(inicio);
 
     //Validando os argumentos da entrada.
     if(argc<4){
@@ -66,11 +70,24 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
+    GET_TIME(fim);
+    tempoInicializacao = fim - inicio;
+
+
+    //---------------------------------------------------------------- Parte 1: Execucão
+    GET_TIME(inicio);
+
     // Chamando método da quadratura
     valor = calcula_integral(a, b, erroMaximo, 1);
 
+    GET_TIME(fim);
+    tempoExecucao = fim - inicio;
+
     // Saída do programa
     printf("O valor da integral de parabola de %f até %f é: %f \n", a, b, valor);
+    printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
+    printf("Tempo de execução é: %.8lf\n", tempoExecucao);
+    printf("Tempo total é: %.8lf\n", tempoExecucao+tempoInicializacao);
 
     return 0;
 }
