@@ -14,14 +14,13 @@ double * vetorIntegral;
 int * vetorParticao;
 
 
-// Função seno
+// Função elefante
 double calcula_funcao(double x){
     return cos(pow(M_E,-x)) * ((0.005 *(pow(x,3))) +1);
 }
 
 // Calculo da integral
 double calcula_integral(double localA, double localB){
-    
     double integral=0;
     double base = localB - localA;
     double altura = calcula_funcao((base/2) + localA);
@@ -33,23 +32,22 @@ double calcula_integral(double localA, double localB){
 void imprime_vetor_double(double * vetor, int tamanho){
 	int i;
 	printf("Vetor: ");
-	for (i = 0; i < tamanho; ++i)
+	for (i = 0; i < tamanho; i++)
 	{
 		printf("[%f]",vetor[i] );
 	}
 	printf("\n");
 }
+
 void imprime_vetor_int(int * vetor, int tamanho){
 	int i;
 	printf("Vetor: ");
-	for (i = 0; i < tamanho; ++i)
+	for (i = 0; i < tamanho; i++)
 	{
 		printf("[%d]",vetor[i] );
 	}
 	printf("\n");
 }
-
-
 
 // Calcula a inicio do intervalo de integraçao de uma partição
 double calcula_inicio_intervalo(int particao){
@@ -71,20 +69,20 @@ double calcula_fim_intervalo(int particao){
 
 void preenche_vetor_particoes(){
 	int i,contador = 0;
-	for ( i = 0; i < nthreads; ++i)
+	for ( i = 0; i < nthreads; i++)
 	{
 		vetorParticao[i] = 0;
 	}
 
 	if(nthreads >= nparticoes){    
 		nParticoesPorThread = 1;
-		for (i = 0; i < nparticoes; ++i){	
+		for (i = 0; i < nparticoes; i++){	
 			vetorParticao[i] = 	i;
 		}
 		nParticoesParaCalcular = nparticoes;	
 	}else{
 		nParticoesPorThread = (int) floor(nparticoes/nthreads);
-		for (i = 0; i < (nthreads - 1); ++i){	
+		for (i = 0; i < (nthreads - 1); i++){	
 			contador += nParticoesPorThread;
 			vetorParticao[i] = 	contador - 1;
 		}
@@ -92,9 +90,10 @@ void preenche_vetor_particoes(){
 		nParticoesParaCalcular = nthreads;	
 	}
 
-	printf("Vetor particoes preenchido:");
-	imprime_vetor_int(vetorParticao,nthreads);
-	printf("Numero de itens no vetor: %d\n", nParticoesParaCalcular);
+    // Descomente as linhas abaixo para ver passo a passo
+	//printf("Vetor particoes preenchido:");
+	//imprime_vetor_int(vetorParticao,nthreads);
+	//printf("Numero de itens no vetor: %d\n", nParticoesParaCalcular);
 
 }
 
@@ -103,31 +102,26 @@ void barreira(int pid) {
 	pthread_mutex_lock(&mutex);
 	threadsExecutaram++;
 	if(threadsExecutaram < nthreads){
-		printf("Thread %d se travou esperando as outras acabarem de calcular integral\n", pid );
+		//printf("Thread %d se travou esperando as outras acabarem de calcular integral\n", pid );
 		pthread_cond_wait(&cond_barreira, &mutex);
 	}else{
 		threadsExecutaram=0;
 		integralIteracao = 0;
 
-		for (i = 0; i < nthreads; ++i)
+		for (i = 0; i < nthreads; i++)
 		{
 			integralIteracao += vetorIntegral[i];
 		}
 
-		//Debug
-		imprime_vetor_double(vetorIntegral, nthreads);
-
-		printf("---------- Integral Iteracao: %f \n", integralIteracao );
+        // Descomente as linhas abaixo para ver passo a passo
+		//imprime_vetor_double(vetorIntegral, nthreads);
+		//printf("---------- Integral Iteracao: %f \n", integralIteracao);
 
 		// Calcula o erro na iteração atual
 		erroIteracaoAtual = fabs(resultadoIntegral - integralIteracao);
 
-		printf("---------- Erro Iteracao: %f \n", erroIteracaoAtual );
-
 		// Atualiza a integral final com o valor da interação atual.
 		resultadoIntegral = integralIteracao;
-
-
 
 		// Dobra o número de partições para a próxima iteração
 		nparticoes = 2 * nparticoes;
@@ -138,13 +132,16 @@ void barreira(int pid) {
 		// Atualiza o vetor de partições com os intervalos finais de cada partição
 		preenche_vetor_particoes();
 
-		printf("Thread %d liberou todas as outras threads\n", pid);
-		pthread_cond_broadcast(&cond_barreira);
+        // Descomente as linhas abaixo para ver passo a passo
+        //printf("---------- Erro Iteracao: %f \n", erroIteracaoAtual );
+		//printf("Thread %d liberou todas as outras threads\n", pid);
+
+			pthread_cond_broadcast(&cond_barreira);
 	}
 	pthread_mutex_unlock(&mutex);
 }
 
-void* threads_integral (void* arg){
+void * threads_integral (void* arg){
 	// Descobre o pid da thread
 	int* p = (int *) arg;
 	int pid = * p;
@@ -152,7 +149,7 @@ void* threads_integral (void* arg){
 	int particaoInicial,particaoFinal, i;
 	double inicioIntervalo, fimIntervalo;
 
-	printf("Thread %d criada!\n", pid);
+	printf("-- Thread %d criada!\n", pid);
 
 	// Enquanto o erro da iteração for maior que o erro máximo, calcula a integral mais uma vez
 	while(erroIteracaoAtual > erroMaximo){
@@ -171,21 +168,24 @@ void* threads_integral (void* arg){
 			for(i = particaoInicial ; i <= particaoFinal; i++){ 
                 inicioIntervalo = calcula_inicio_intervalo(i);
                 fimIntervalo = calcula_fim_intervalo(i);
-                printf("    Thread %d Inicio intervalo %f \n",pid ,inicioIntervalo);
-                printf("    Thread %d Fim intervalo %f \n",pid ,fimIntervalo);
-                vetorIntegral[pid] += calcula_integral(inicioIntervalo,fimIntervalo);
-                printf("    Thread %d , particao %d, valor integral: %f\n",pid,i,vetorIntegral[pid] );
+
+                // Descomente as linhas abaixo para ver passo a passo
+                //printf("    Thread %d Inicio intervalo %f \n", pid, inicioIntervalo);
+                //printf("    Thread %d Fim intervalo %f \n", pid, fimIntervalo);
+                vetorIntegral[pid] += calcula_integral(inicioIntervalo, fimIntervalo);
+                //printf("    Thread %d , particao %d, valor integral: %f\n", pid, i, vetorIntegral[pid]);
             }
-			printf("Thread %d calculou seu pedaço de integral!\n Sua particaoInicial foi: %d e a sua particaoFinal foi %d \n", pid,particaoInicial,particaoFinal);
+			//printf("Thread %d calculou seu pedaço de integral!\n Sua particaoInicial foi: %d e a sua particaoFinal foi %d \n", pid,particaoInicial,particaoFinal);
 
 
 		}else{
 			pthread_mutex_unlock(&mutex);
 			vetorIntegral[pid] = 0;
-			printf("Thread %d não fez nada nessa iteração!\n", pid);
+
+            // Descomente as linhas abaixo para ver passo a passo
+			//printf("Thread %d não fez nada nessa iteração!\n", pid);
 		}
 
-		
 		barreira(pid);
 	}
 
@@ -201,6 +201,13 @@ void valida_entrada(int argc, char *argv[]){
     }
 }
 
+// Verifica se o número de threads está correto.
+void valida_threads(int nthreads){
+    if(nthreads <1 || nthreads>8){
+        printf("Numero de threads deve ser entre 1 e 8\n");
+        exit(EXIT_FAILURE);
+    }
+}
 
 
 int main(int argc, char *argv[]){
@@ -217,7 +224,10 @@ int main(int argc, char *argv[]){
     erroMaximo = atof(argv[3]);
     nthreads = atoi(argv[4]);
 
-	// Alocando espaço para o vetor de threads.
+    // Validando numero de threads
+    valida_threads(nthreads);
+
+	// Alocando espaço para o vetor de threads
     threads = (pthread_t *) malloc(sizeof(pthread_t) * nthreads);
     if(threads==NULL) {
         printf("--ERRO: malloc() em vetor de threads\n"); exit(-1);
@@ -225,19 +235,18 @@ int main(int argc, char *argv[]){
 
     // Alocando espaço para o vetor de integrais
     vetorIntegral = malloc(sizeof(double) * nthreads);
-    if( vetorIntegral == NULL){
+    if(vetorIntegral == NULL){
     	printf("--ERRO: malloc() em vetor de integrais\n");
     }
 
     // Alocando espaço para o vetor de particao
     vetorParticao = malloc(sizeof(int) * nthreads);
-    if( vetorParticao == NULL){
+    if(vetorParticao == NULL){
     	printf("--ERRO: malloc() em vetor de integrais\n");
     }
 
     // Calcula o primeiro valor da integral, com nparticoes = 1 
     resultadoIntegral = calcula_integral(a,b);
-
 
     // Altera o numero de partições para a próxima iteração
     nparticoes = 2;
@@ -249,9 +258,7 @@ int main(int argc, char *argv[]){
     tamanhoParticao = (b - a)/nparticoes;
 
     // Criando as threads
-    for (i = 0; i < nthreads; ++i)
-    {
- 		
+    for (i= 0; i < nthreads; i++) {
  		pid = malloc(sizeof(int));
  		if(pid == NULL){
 			printf("--ERRO: malloc() em alocação threads\n"); exit(-1);
@@ -264,7 +271,6 @@ int main(int argc, char *argv[]){
         if(pthread_create(&threads[i], NULL, threads_integral, (void *) pid)){
             printf("--ERRO: pthread_create()\n"); exit(-1);
         }
-
     }
 
     // Espera as threads terminarem
@@ -274,9 +280,7 @@ int main(int argc, char *argv[]){
         }
     }
 
-    printf("Resultado integral: %f\n",resultadoIntegral );
+    printf("Resultado integral de elefante é: %f\n", resultadoIntegral);
 
-    //printf("A: %f B: %f erroMaximo: %f nthreads: %d \n",a,b,erroMaximo,nthreads);
     return 0;
-
 }
