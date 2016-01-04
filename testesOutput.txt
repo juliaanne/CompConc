@@ -622,7 +622,7 @@ Threads variando de 4 a 6
 -- FUNÇÃO ELEFANTE EXPONENCIAL --
 O valor da integral de exponencial de 2.0 até 5.0 é: 39.14910008 
 Tempo de inicialização é: 0.00000811
-Tempo de execução é: 0.00004911
+Tempo de execução é: 0.00004911SEQUENCIALSEQUENCIALSEQUENCIAL
 Tempo total é: 0.00005722
 
 

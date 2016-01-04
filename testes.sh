@@ -1,4 +1,19 @@
 # !/bin/bash
+# Reset
+Color_Off='\e[0m'       # Text Reset
+
+# Cores
+Red='\e[0;31m'          # Sucesso
+Green='\e[0;32m'        # Falha
+Yellow='\e[0;33m'       # Funcao seno
+Blue='\e[0;34m'         # Funcao elefante
+Purple='\e[0;35m'       # Funcao parabola
+Cyan='\e[0;36m'         # Cyan
+White='\e[0;37m'        # White
+
+SUCESSO = "${Green}Sucesso!"
+
+
 echo "SIMULAÇÃO TESTES"
 echo "Compilando funções elefante - sequencial e paralela"
 gcc elefanteSequencial.c -o elefanteSequencial.exe -Wall -lm
@@ -18,7 +33,7 @@ echo ""
 echo ""
 
 
-echo "REALIZAÇÃO TESTES FUNÇÃO ELEFANTE"
+echo "REALIZANDO TESTES FUNÇÃO ELEFANTE"
 
 echo "Simulação 1"
 echo "Intervalo de 0 a 2"
