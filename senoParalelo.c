@@ -151,7 +151,7 @@ void * threads_integral (void* arg){
     int particaoInicial,particaoFinal, i;
     double inicioIntervalo, fimIntervalo;
 
-    printf("-- Thread %d criada!\n", pid);
+    //printf("-- Thread %d criada!\n", pid);
 
     // Enquanto o erro da iteração for maior que o erro máximo, calcula a integral mais uma vez
     while(erroIteracaoAtual > erroMaximo){
@@ -296,10 +296,13 @@ int main(int argc, char *argv[]){
     GET_TIME(fim);
     tempoExecucao = fim - inicio;
 
-    printf("Resultado integral de seno é: %f\n", resultadoIntegral);
+    printf("-- FUNÇÃO SENO PARALELA --\n");
+    printf("Número de threads é: %d\n", nthreads);
+    printf("Resultado integral de seno é: %.8lf\n\n", resultadoIntegral);
     printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
     printf("Tempo de execução é: %.8lf\n", tempoExecucao);
     printf("Tempo total é: %.8lf\n", tempoExecucao+tempoInicializacao);
+    printf("\n\n");
 
     return 0;
 }
