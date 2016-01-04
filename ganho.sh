@@ -23,9 +23,9 @@ funcao=$5
 tempoSequencial=$(./sequencial.exe $a $b $erro $funcao)
 tempoParalelo=$(./paralelo.exe $a $b $erro $threads $funcao)
 
-echo "Tempo sequencial:" $tempoSequencial "s"
+echo "Tempo sequencial:" $tempoSequencial"s"
 echo "Tempo paralelo:" $tempoParalelo "s"
 
-ganho=$(echo "$tempoParalelo/$tempoSequencial" | bc -l)
+ganho=$(echo "$tempoSequencial/$tempoParalelo" | bc -l)
 
 echo "Ganho:" $ganho
