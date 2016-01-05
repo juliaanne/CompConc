@@ -6,10 +6,10 @@
 //#include "timer.h"
 
 pthread_mutex_t mutex,mutexInsere,mutexIntegral,mutexTravadas,mutexQtdTarefas;
-pthread_cond_t condPodeConsumir;
+pthread_cond_t condPodeConsumir,cond_barreira;
 
 double a, b, erroMaximo, resultadoIntegral, integralIteracao;
-int flagAcabou = 1 ,threadsTravadas = 0, tamanhoVetorTarefas = 100, qtdTarefas = 0, nthreads;
+int flagAcabou = 1 ,threadsExecutadas = 0, tamanhoVetorTarefas = 100, qtdTarefas = 0, nthreads;
 
 typedef struct 
 {
@@ -22,7 +22,8 @@ tarefa * vetorTarefas;
 
 
 double calcula_funcao(double x){
-    return 1+x;
+    //return 1+x;
+    return sin(x*x);
 }
 
 void imprime_vetor_tarefa(){
@@ -43,7 +44,7 @@ void insere_tarefa(tarefa t){
     }
     vetorTarefas[qtdTarefas] = t;
     qtdTarefas++;
-    pthread_cond_broadcast(&condPodeConsumir);
+    pthread_cond_signal(&cond_barreira);
     pthread_mutex_unlock(&mutex);
 }
 
@@ -58,10 +59,9 @@ tarefa retira_tarefa(){
 
 tarefa cria_tarefa(double a, double b, double area){
     tarefa t1;
-    double intervalo = b-a;
 
     t1.a = a;
-    t1.b = (intervalo/2) + a;
+    t1.b = b;
     t1.area = area;
 
     return t1;
@@ -100,19 +100,6 @@ double calcula_integral(double localA, double localB){
     return integral;
 }
 
-
-int verifica_thread_travadas(){
-    pthread_mutex_lock(&mutexTravadas);
-    if(threadsTravadas == nthreads - 1){
-        pthread_mutex_unlock(&mutexTravadas);
-        return 1;
-    }else{
-        pthread_mutex_unlock(&mutexTravadas);
-        return 0;
-    }
-    
-}
-
 int verifica_se_existem_tarefas(){
     pthread_mutex_lock(&mutexQtdTarefas);
     if(qtdTarefas > 0){
@@ -125,12 +112,25 @@ int verifica_se_existem_tarefas(){
     }
 }
 
+void barreira(){
+    pthread_mutex_lock(&mutexTravadas);
+    threadsExecutadas++;
+    if(threadsExecutadas < nthreads){
+        pthread_cond_wait(&cond_barreira,&mutexTravadas);
+        printf("------------------------------------------ Recebi o sinal!!!! \n");
+    }else{
+        flagAcabou = 0;
+        pthread_cond_broadcast(&cond_barreira);
+    }
+    pthread_mutex_unlock(&mutexTravadas);
+}
+
 void * threads_integral (void* arg){
     // Descobre o pid da thread
     int* p = (int *) arg;
     int pid = * p;
-    int i;
     tarefa t1, t2;
+
 
     double erroIteracaoAtual = DBL_MAX, integralLocal, integralEsquerda = 0, integralDireita = 0, intervalo;
 
@@ -152,10 +152,11 @@ void * threads_integral (void* arg){
                 
                 intervalo = (t1.b - t1.a);
                 printf("--- Thread %d intervalo da vez: [%f-%f] \n", pid,t1.a, t1.b );
-                integralEsquerda = calcula_integral(t1.a, intervalo + t1.a);
-                integralDireita = calcula_integral(intervalo + t1.a , t1.b);
+                integralEsquerda = calcula_integral(t1.a, (intervalo/2) + t1.a);
+                integralDireita = calcula_integral((intervalo/2) + t1.a , t1.b);
                 integralLocal = integralDireita + integralEsquerda;
-                erroIteracaoAtual = t1.area - integralLocal;
+                erroIteracaoAtual = fabs(t1.area - integralLocal);
+
                 printf("---- Thread %d  integralLocal:%f erroIteracaoAtual: %f\n",pid,integralLocal,erroIteracaoAtual );
                 if(erroIteracaoAtual < erroMaximo){
                     printf("Thread %d entrou em erroIteracaoAtual %f < erroMaximo\n", pid, erroIteracaoAtual);
@@ -167,24 +168,15 @@ void * threads_integral (void* arg){
                     break;
                 }else{
                     printf("Thread %d. Erro não é bom ainda %f . Divide MAIS SAPORRA\n", pid, erroIteracaoAtual);
-                    t1 = cria_tarefa(t1.a, intervalo + t1.a, integralEsquerda);
-                    t2 = cria_tarefa(intervalo + t1.a , t1.b, integralDireita);
+                    printf("Theread %d t1.a %f , t1.b %f \n", pid,t1.a,((intervalo/2) + t1.a ));
+                    t2 = cria_tarefa((intervalo/2) + t1.a , t1.b, integralDireita);
+                    t1 = cria_tarefa(t1.a, (intervalo/2) + t1.a, integralEsquerda);
                     insere_tarefa(t2);
+                    printf("------------------------------------------ Enviei o sinal!!!! \n");
                 }
             }
-        }else if(verifica_thread_travadas()){
-            printf("Thread %d sou a última, seto flagAcabou\n", pid);
-            flagAcabou = 0;
-            pthread_cond_broadcast(&condPodeConsumir);
-            printf("Thread %d Sinalizei meu bonde\n",pid);
-            break;
         }else{
-            printf("Thread %d não pegou nenhuma tarefa, vai se travar\n", pid );
-            pthread_mutex_lock(&mutexTravadas);
-            threadsTravadas++;
-            printf("Thread %d , somos o bonde das threads travadas n:%d \n",pid,threadsTravadas );
-            pthread_cond_wait(&condPodeConsumir, &mutexTravadas);
-            printf("Thread %d fui sinalizada\n", pid);
+            barreira();
         }
     }
     printf("Sai Thread:%d\n" ,pid);
