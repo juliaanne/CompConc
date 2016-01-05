@@ -5,8 +5,8 @@
 #include <float.h>
 //#include "timer.h"
 
-pthread_mutex_t mutex;
-pthread_cond_t cond_barreira;
+pthread_mutex_t mutex,mutexIntegral;
+pthread_cond_t cond_barreira,condPodeConsumir;
 
 double a, b, erroMaximo, resultadoIntegral, integralIteracao, erroIteracaoAtual = DBL_MAX, tamanhoParticao;
 int tamanhoVetorTarefas = 100, qtdTarefas = 0, nthreads, nparticoes, nParticoesParaCalcular = 2, nParticoesPorThread, threadsExecutaram = 0, nparticoesIteracao = 1, out;
@@ -33,6 +33,7 @@ void insere_tarefa(tarefa t){
     }
     vetorTarefas[qtdTarefas] = t;
     qtdTarefas++;
+    pthread_cond_broadcast(&condPodeConsumir);
     pthread_mutex_unlock(&mutex);
 }
 
@@ -48,6 +49,17 @@ tarefa * retira_tarefa(){
     }
     pthread_mutex_unlock(&mutex);
     return t;
+}
+
+tarefa cria_tarefa(double a, double b, double area){
+    tarefa t1;
+    double intervalo = b-a;
+
+    t1.a = a;
+    t1.b = (intervalo/2) + a;
+    t1.area = area;
+
+    return t1;
 }
 
 void init_tarefa(double a, double b, double area){
@@ -71,15 +83,15 @@ void init_tarefa(double a, double b, double area){
     insere_tarefa(t2);
 }
 
-// // Calculo da integral
-// double calcula_integral(double localA, double localB){
-//     double integral=0;
-//     double base = localB - localA;
-//     double altura = calcula_funcao((base/2) + localA);
+// Calculo da integral
+double calcula_integral(double localA, double localB){
+    double integral=0;
+    double base = localB - localA;
+    double altura = calcula_funcao((base/2) + localA);
 
-//     integral = base * altura;
-//     return integral;
-// }
+    integral = base * altura;
+    return integral;
+}
 
 // // Função auxiliar de debug
 // void imprime_vetor_double(double * vetor, int tamanho){
@@ -170,57 +182,41 @@ void * threads_integral (void* arg){
     // Descobre o pid da thread
     int* p = (int *) arg;
     int pid = * p;
-    tarefa t;
+    tarefa* t;
 
     int i;
-    double erroIteracaoAtual;
+    double erroIteracaoAtual = 0, integralLocal, integralEsquerda = 0, integralDireita = 0, intervalo;
 
     printf("-- Thread %d criada!\n", pid);
 
     // Enquanto o erro da iteração for maior que o erro máximo, calcula a integral mais uma vez
-    while(erroIteracaoAtual > erroMaximo){
-        t = retira_tarefa();
+    pthread_mutex_lock(&mutex);
+    while(qtdTarefas > 0){
+        pthread_mutex_unlock(&mutex);
+        t1 = retira_tarefa();
         
-        if (t != NULL){
-            t.
+        while(erroIteracaoAtual < erroMaximo){
+            integralEsquerda = 0;
+            integralDireita = 0;
+            integralLocal = 0;
+                
+            if (t1 != NULL){
+                intervalo = (t1->b - t1->a);
+                integralEsquerda = calcula_integral(t1->a, intervalo + t1->a);
+                integralDireita = calcula_integral(intervalo + t1->a , t1->b);
+                integralLocal = integralDireita + integralEsquerda;
+                erroIteracaoAtual = t1->area - integralLocal;
+                if(erroIteracaoAtual < erroMaximo){
+                    pthread_mutex_lock(&mutexIntegral);
+                    resultadoIntegral += integralLocal;
+                    pthread_mutex_unlock(&mutexIntegral);
+                }else{
+                    t1 = cria_tarefa(t1->a, intervalo + t1->a, integralEsquerda);
+                    t2 = cria_tarefa(intervalo + t1->a , t1->b, integralDireita);
+                    insere_tarefa(t2);
+                }
+            } //ToDO: TRATAR
         }
-
-        // Verifica se existe alguma partição livre que alguma thread ainda não pegou
-        if( nParticoesParaCalcular > 0 ){
-            // Pega o valor da partição final do buffer de partições
-            particaoFinal = vetorParticao[nParticoesParaCalcular - 1];
-            // Calcula o valor da partição inicial baseada na partição final
-            if( nParticoesParaCalcular == 1 ){
-                particaoInicial = 0;
-            }else{
-                particaoInicial =  vetorParticao[nParticoesParaCalcular - 2] + 1;
-            }
-            // Indica que foi removido um elemento do buffer
-            pthread_mutex_unlock(&mutex);
-            nParticoesParaCalcular --;
-
-            // Limpa o vetor de integrais da última iteração            
-            vetorIntegral[pid] = 0;
-            // Faz o cálcula da integral para cada partição e salva no vetor de integrais parciais  
-            for(i = particaoInicial ; i <= particaoFinal; i++){ 
-                inicioIntervalo = calcula_inicio_intervalo(i);
-                fimIntervalo = calcula_fim_intervalo(i);
-                printf("    Thread %d Inicio intervalo %f \n", pid, inicioIntervalo);
-                printf("    Thread %d Fim intervalo %f \n", pid, fimIntervalo);
-                vetorIntegral[pid] += calcula_integral(inicioIntervalo, fimIntervalo);
-                printf("    Thread %d , particao %d, valor integral: %f\n", pid, i, vetorIntegral[pid]);
-            }
-            printf("Thread %d calculou seu pedaço de integral!\n Sua particaoInicial foi: %d e a sua particaoFinal foi %d \n", pid,particaoInicial,particaoFinal);
-
-
-        }else{
-            pthread_mutex_unlock(&mutex);
-            // Limpa o vetor de integrais da última iteração            
-            vetorIntegral[pid] = 0;
-            printf("Thread %d não fez nada nessa iteração!\n", pid);
-        }
-
-        barreira(pid);
     }
 
     pthread_exit(NULL);
@@ -249,6 +245,7 @@ int main(int argc, char *argv[]){
     pthread_t* threads;
     int i;
     int* pid;
+    double integralInicial;
 
     //---------------------------------------------------------------- Parte 1: Inicialização
     //GET_TIME(inicio);
@@ -278,10 +275,10 @@ int main(int argc, char *argv[]){
     }
 
     // Calcula o primeiro valor da integral
-    resultadoIntegral = calcula_integral(a,b);
+    integralInicial = calcula_integral(a,b);
 
     // Preenche o vetor de tarefas pela primeira vez
-    init_tarefas(a, b, resultadoIntegral);
+    init_tarefas(a, b, integralInicial);
 
     //GET_TIME(fim);
     //tempoInicializacao = fim - inicio;
