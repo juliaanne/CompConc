@@ -73,12 +73,12 @@ int main(int argc, char *argv[]){
     tempoExecucao = fim - inicio;
 
     // Saída do programa
-    printf("-- FUNÇÃO ELEFANTE EXPONENCIAL --\n");
+    printf("-- FUNÇÃO EXPONENCIAL SEQUENCIAL --\n");
     printf("O valor da integral de exponencial de %.1lf até %.1lf é: %.8lf \n", a, b, valor);
-    printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
-    printf("Tempo de execução é: %.8lf\n", tempoExecucao);
+    //printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
+    //printf("Tempo de execução é: %.8lf\n", tempoExecucao);
     printf("Tempo total é: %.8lf\n", tempoExecucao+tempoInicializacao);
-    printf("\n\n");
+    //printf("\n\n");
 
     return 0;
 }

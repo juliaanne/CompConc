@@ -1,0 +1,83 @@
+SIMULAÇÃO TESTES SEQUENCIAIS
+Compilando funções
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO LINEAR
+-- FUNÇÃO LINEAR SEQUENCIAL --
+O valor da integral de linear de 0.0 até 10.0 é: 60.00000000 
+Tempo total é: 0.00000906
+------- Valor esperado era: 60
+
+-- FUNÇÃO LINEAR SEQUENCIAL --
+O valor da integral de linear de 50.0 até 130.0 é: 7280.00000000 
+Tempo total é: 0.00000596
+------- Valor esperado era: 7280
+
+-- FUNÇÃO LINEAR SEQUENCIAL --
+O valor da integral de linear de -30.0 até 70.0 é: 2100.00000000 
+Tempo total é: 0.00000501
+------- Valor esperado era: 2100
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO PARABOLA
+-- FUNÇÃO PARABOLA SEQUENCIAL --
+O valor da integral de parabola de -1.0 até 1.0 é: 1.57080158 
+Tempo total é: 0.00004005
+------- Valor esperado era: 1.5708
+
+-- FUNÇÃO PARABOLA SEQUENCIAL --
+O valor da integral de parabola de 0.0 até 1.0 é: 0.78540079 
+Tempo total é: 0.00002289
+------- Valor esperado era: 0.78540
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO EXPONENCIAL
+-- FUNÇÃO EXPONENCIAL SEQUENCIAL --
+O valor da integral de exponencial de 0.0 até 20.0 é: 2667.87771398 
+Tempo total é: 0.00274205
+------- Valor esperado era: 2667.88
+
+-- FUNÇÃO EXPONENCIAL SEQUENCIAL --
+O valor da integral de exponencial de -50.0 até 50.0 é: 83335.78543169 
+Tempo total é: 0.04159904
+------- Valor esperado era: 83335.8
+
+-- FUNÇÃO EXPONENCIAL SEQUENCIAL --
+O valor da integral de exponencial de 30.0 até 100.0 é: 324333.34499833 
+Tempo total é: 0.01989818
+------- Valor esperado era: 324333
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO SENO
+-- FUNÇÃO SENO SEQUENCIAL --
+O valor da integral de seno de 0.0 até 10.0 é: 0.58366983 
+Tempo total é: 0.00072408
+------- Valor esperado era: 0.583671
+
+-- FUNÇÃO SENO SEQUENCIAL --
+O valor da integral de seno de -30.0 até 0.0 é: 0.62554149 
+Tempo total é: 0.00082684
+------- Valor esperado era: 0.625544
+
+-- FUNÇÃO SENO SEQUENCIAL --
+O valor da integral de seno de -50.0 até 100.0 é: 1.25047960 
+Tempo total é: 0.02534914
+------- Valor esperado era: 0.625544
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO ELEFANTE
+-- FUNÇÃO ELEFANTE SEQUENCIAL --
+O valor da integral de elefante de 0.0 até 20.0 é: 219.75925433 
+Tempo total é: 0.00272202
+------- Valor esperado era: 219.759
+
+-- FUNÇÃO ELEFANTE SEQUENCIAL --
+O valor da integral de elefante de 10.0 até 100.0 é: 125077.49999708 
+Tempo total é: 0.03871512
+------- Valor esperado era: 125077
+
+-- FUNÇÃO ELEFANTE SEQUENCIAL --
+O valor da integral de elefante de -10.0 até 40.0 é: 3239.42245489 
+Tempo total é: 0.65430903
+------- Valor esperado era: 3239.42
+
