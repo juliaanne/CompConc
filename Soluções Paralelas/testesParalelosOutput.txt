@@ -1,0 +1,97 @@
+SIMULAÇÃO TESTES PARALELOS
+Compilando funções
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO LINEAR
+-- FUNÇÃO LINEAR PARALELA --
+Número de threads é: 4
+Resultado integral de linear é: 60.00000000
+Tempo total é: 0.00029612
+------- Valor esperado era: 60
+
+-- FUNÇÃO LINEAR PARALELA --
+Número de threads é: 4
+Resultado integral de linear é: 7280.00000000
+Tempo total é: 0.00022721
+------- Valor esperado era: 7280
+
+-- FUNÇÃO LINEAR PARALELA --
+Número de threads é: 4
+Resultado integral de linear é: 2100.00000000
+Tempo total é: 0.00022292
+------- Valor esperado era: 2100
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO PARABOLA
+-- FUNÇÃO PARABOLA PARALELA --
+Número de threads é: 4
+Resultado integral de parabola é: 1.57080158
+Tempo total é: 0.00044584
+------- Valor esperado era: 1.5708
+
+-- FUNÇÃO PARABOLA PARALELA --
+Número de threads é: 4
+Resultado integral de parabola é: 0.78540079
+Tempo total é: 0.00028801
+------- Valor esperado era: 0.78540
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO EXPONENCIAL
+-- FUNÇÃO EXPONENCIAL PARALELA --
+Número de threads é: 4
+Resultado integral de exponencial é: 2667.87771398
+Tempo total é: 0.00180507
+------- Valor esperado era: 2667.88
+
+-- FUNÇÃO EXPONENCIAL PARALELA --
+Número de threads é: 4
+Resultado integral de exponencial é: 83335.78543169
+Tempo total é: 0.02265191
+------- Valor esperado era: 83335.8
+
+-- FUNÇÃO EXPONENCIAL PARALELA --
+Número de threads é: 4
+Resultado integral de exponencial é: 324333.34499833
+Tempo total é: 0.01165104
+------- Valor esperado era: 324333
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO SENO
+-- FUNÇÃO SENO PARALELA --
+Número de threads é: 4
+Resultado integral de seno é: 0.58366983
+Tempo total é: 0.00077295
+------- Valor esperado era: 0.583671
+
+-- FUNÇÃO SENO PARALELA --
+Número de threads é: 4
+Resultado integral de seno é: 0.62554149
+Tempo total é: 0.00080085
+------- Valor esperado era: 0.625544
+
+-- FUNÇÃO SENO PARALELA --
+Número de threads é: 4
+Resultado integral de seno é: 1.25047960
+Tempo total é: 0.01559496
+------- Valor esperado era: 1.25048
+
+**
+REALIZAÇÃO DE TESTES DA FUNÇÃO ELEFANTE
+-- FUNÇÃO ELEFANTE PARALELA --
+Número de threads é: 4
+Resultado integral de elefante é: 219.75925433
+Tempo total é: 0.00148392
+------- Valor esperado era: 219.759
+
+-- FUNÇÃO ELEFANTE PARALELA --
+Número de threads é: 4
+Resultado integral de elefante é: 125077.49999708
+Tempo total é: 0.01851988
+------- Valor esperado era: 125077
+
+-- FUNÇÃO ELEFANTE PARALELA --
+Número de threads é: 4
+Resultado integral de elefante é: 3239.42245489
+Tempo total é: 0.31432796
+------- Valor esperado era: 3239.42
+

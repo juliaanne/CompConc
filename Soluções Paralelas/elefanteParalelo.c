@@ -265,11 +265,11 @@ int main(int argc, char *argv[]){
 
     printf("-- FUNÇÃO ELEFANTE PARALELA --\n");
     printf("Número de threads é: %d\n", nthreads);
-    printf("Resultado integral de elefante é: %.8lf\n\n", resultadoIntegral);
-    printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
-    printf("Tempo de execução é: %.8lf\n", tempoExecucao);
+    printf("Resultado integral de elefante é: %.8lf\n", resultadoIntegral);
+    //printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
+    //printf("Tempo de execução é: %.8lf\n", tempoExecucao);
     printf("Tempo total é: %.8lf\n", tempoExecucao+tempoInicializacao);
-    printf("\n\n");
+    //printf("\n\n");
 
     return 0;
 }
