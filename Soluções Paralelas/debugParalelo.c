@@ -30,6 +30,27 @@ double calcula_integral(double localA, double localB){
     return integral;
 }
 
+// Função auxiliar de debug
+void imprime_vetor_double(double * vetor, int tamanho){
+	int i;
+	printf("Vetor: ");
+	for (i = 0; i < tamanho; i++)
+	{
+		printf("[%f]",vetor[i] );
+	}
+	printf("\n");
+}
+// Função auxiliar de debug
+void imprime_vetor_int(int * vetor, int tamanho){
+	int i;
+	printf("Vetor: ");
+	for (i = 0; i < tamanho; i++)
+	{
+		printf("[%d]",vetor[i] );
+	}
+	printf("\n");
+}
+
 // Calcula a inicio do intervalo de integraçao de uma partição
 double calcula_inicio_intervalo(int particao){
     double inicio = 0;
@@ -75,6 +96,10 @@ void preenche_vetor_particoes(){
 		nParticoesParaCalcular = nthreads;	
 	}
 
+	printf("Vetor particoes preenchido:");
+	imprime_vetor_int(vetorParticao,nthreads);
+	printf("Numero de itens no vetor: %d\n", nParticoesParaCalcular);
+
 }
 
 // Função barreira para aguardar todas as threads terminarem e a última fazer os ajustes para a próxima iteração
@@ -83,6 +108,7 @@ void barreira(int pid) {
 	pthread_mutex_lock(&mutex);
 	threadsExecutaram++;
 	if(threadsExecutaram < nthreads){
+		printf("Thread %d se travou esperando as outras acabarem de calcular integral\n", pid );
 		pthread_cond_wait(&cond_barreira, &mutex);
 	}else{
 		// Zera os valores da última iteração
@@ -94,6 +120,10 @@ void barreira(int pid) {
 		{
 			integralIteracao += vetorIntegral[i];
 		}
+
+
+		imprime_vetor_double(vetorIntegral, nthreads);
+		printf("---------- Integral Iteracao: %f \n", integralIteracao);
 
 		// Calcula o erro na iteração atual
 		erroIteracaoAtual = fabs(resultadoIntegral - integralIteracao);
@@ -110,7 +140,10 @@ void barreira(int pid) {
 		// Atualiza o vetor de partições com os intervalos finais de cada partição
 		preenche_vetor_particoes();
 
-		pthread_cond_broadcast(&cond_barreira);
+        printf("---------- Erro Iteracao: %f \n", erroIteracaoAtual );
+		printf("Thread %d liberou todas as outras threads\n", pid);
+
+			pthread_cond_broadcast(&cond_barreira);
 	}
 	pthread_mutex_unlock(&mutex);
 }
@@ -122,6 +155,8 @@ void * threads_integral (void* arg){
 
 	int particaoInicial,particaoFinal, i;
 	double inicioIntervalo, fimIntervalo;
+
+	printf("-- Thread %d criada!\n", pid);
 
 	// Enquanto o erro da iteração for maior que o erro máximo, calcula a integral mais uma vez
 	while(erroIteracaoAtual > erroMaximo){
@@ -146,13 +181,19 @@ void * threads_integral (void* arg){
 			for(i = particaoInicial ; i <= particaoFinal; i++){ 
                 inicioIntervalo = calcula_inicio_intervalo(i);
                 fimIntervalo = calcula_fim_intervalo(i);
+                printf("    Thread %d Inicio intervalo %f \n", pid, inicioIntervalo);
+                printf("    Thread %d Fim intervalo %f \n", pid, fimIntervalo);
                 vetorIntegral[pid] += calcula_integral(inicioIntervalo, fimIntervalo);
+                printf("    Thread %d , particao %d, valor integral: %f\n", pid, i, vetorIntegral[pid]);
             }
+			printf("Thread %d calculou seu pedaço de integral!\n Sua particaoInicial foi: %d e a sua particaoFinal foi %d \n", pid,particaoInicial,particaoFinal);
+
 
 		}else{
 			pthread_mutex_unlock(&mutex);
 			// Limpa o vetor de integrais da última iteração			
 			vetorIntegral[pid] = 0;
+			printf("Thread %d não fez nada nessa iteração!\n", pid);
 		}
 
 		barreira(pid);

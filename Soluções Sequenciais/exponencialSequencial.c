@@ -5,7 +5,6 @@
 #include "timer.h"
 #include <math.h>
 
-
 // Valor para comparação ao erro
 double integralAnterior = 0;
 
