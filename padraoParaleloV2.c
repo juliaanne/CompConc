@@ -5,11 +5,11 @@
 #include <float.h>
 //#include "timer.h"
 
-pthread_mutex_t mutex,mutexIntegral;
+pthread_mutex_t mutex,mutexInsere,mutexIntegral,mutexTravadas,mutexQtdTarefas;
 pthread_cond_t cond_barreira,condPodeConsumir;
 
-double a, b, erroMaximo, resultadoIntegral, integralIteracao, erroIteracaoAtual = DBL_MAX, tamanhoParticao;
-int tamanhoVetorTarefas = 100, qtdTarefas = 0, nthreads, nparticoes, nParticoesParaCalcular = 2, nParticoesPorThread, threadsExecutaram = 0, nparticoesIteracao = 1, out;
+double a, b, erroMaximo, resultadoIntegral, integralIteracao;
+int flagAcabou = 1 ,threadsTravadas = 0, tamanhoVetorTarefas = 100, qtdTarefas = 0, nthreads;
 
 typedef struct 
 {
@@ -18,18 +18,28 @@ typedef struct
     double area;
 } tarefa ;
 
-tarefa * vetorTarefa;
+tarefa * vetorTarefas;
 
 
 double calcula_funcao(double x){
     return 1+x;
 }
 
+void imprime_vetor_tarefa(){
+    int i;
+    printf("Vetor de tarefa:");
+    for ( i = 0; i < qtdTarefas; ++i)
+    {
+        printf("[a=%f | b=%f | area=%f] ",vetorTarefas[i].a,vetorTarefas[i].b,vetorTarefas[i].area);
+    }
+    printf("\n");
+}
+
 void insere_tarefa(tarefa t){
     pthread_mutex_lock(&mutex);
     if(tamanhoVetorTarefas == qtdTarefas){
         tamanhoVetorTarefas = tamanhoVetorTarefas * 2;
-        realloc(vetorTarefas, sizeof(tarefa) * tamanhoVetorTarefas)
+        vetorTarefas = realloc(vetorTarefas, sizeof(tarefa) * tamanhoVetorTarefas);
     }
     vetorTarefas[qtdTarefas] = t;
     qtdTarefas++;
@@ -37,17 +47,12 @@ void insere_tarefa(tarefa t){
     pthread_mutex_unlock(&mutex);
 }
 
-tarefa * retira_tarefa(){
-    tarefa *t;
-    t = (tarefa *) malloc(sizeof(tarefa));
-    pthread_mutex_lock(&mutex);
-    if(qtdTarefas>0){
-        t = &vetorTarefas[qtdTarefas];
-        qtdTarefas--;
-    } else {
-        return NULL;
-    }
-    pthread_mutex_unlock(&mutex);
+tarefa retira_tarefa(){
+    tarefa t;
+    pthread_mutex_lock(&mutexInsere);
+    t = vetorTarefas[qtdTarefas - 1];
+    qtdTarefas--;
+    pthread_mutex_unlock(&mutexInsere);
     return t;
 }
 
@@ -62,18 +67,19 @@ tarefa cria_tarefa(double a, double b, double area){
     return t1;
 }
 
-void init_tarefa(double a, double b, double area){
+void inicia_tarefa(double a, double b, double area){
     double intervalo = b-a;
     tarefa t1, t2;
     double umQuartoDoIntervalo = intervalo/4;
     double tresQuartosDoIntervalo = 3*(intervalo/4);
+    double areaEsquerda, areaDireita;
 
-    areaEsqueda = intervalo/2 * calcula_funcao( a + umQuartoDoIntervalo);
+    areaEsquerda = intervalo/2 * calcula_funcao( a + umQuartoDoIntervalo);
     areaDireita = intervalo/2 * calcula_funcao(a + tresQuartosDoIntervalo);
 
     t1.a = a;
     t1.b = (intervalo/2) + a;
-    t1.area = areaEsqueda;
+    t1.area = areaEsquerda;
 
     t2.a = (intervalo/2) + a;
     t2.b = b;
@@ -81,6 +87,7 @@ void init_tarefa(double a, double b, double area){
 
     insere_tarefa(t1);
     insere_tarefa(t2);
+
 }
 
 // Calculo da integral
@@ -93,132 +100,75 @@ double calcula_integral(double localA, double localB){
     return integral;
 }
 
-// // Função auxiliar de debug
-// void imprime_vetor_double(double * vetor, int tamanho){
-//     int i;
-//     printf("Vetor: ");
-//     for (i = 0; i < tamanho; i++)
-//     {
-//         printf("[%f]",vetor[i] );
-//     }
-//     printf("\n");
-// }
-// // Função auxiliar de debug
-// void imprime_vetor_int(int * vetor, int tamanho){
-//     int i;
-//     printf("Vetor: ");
-//     for (i = 0; i < tamanho; i++)
-//     {
-//         printf("[%d]",vetor[i] );
-//     }
-//     printf("\n");
-// }
 
-// // Calcula a inicio do intervalo de integraçao de uma partição
-// double calcula_inicio_intervalo(int particao){
-//     double inicio = 0;
-
-//     inicio = a + (particao * tamanhoParticao);
-
-//     return inicio;
-// }
-
-// // Calcula o fim do intervalo de integraçao de uma partição
-// double calcula_fim_intervalo(int particao){
-//     double fim = 0;
-
-//     fim = a + ((particao + 1) * tamanhoParticao);
-
-//     return fim;
-// }
-
-// // Função barreira para aguardar todas as threads terminarem e a última fazer os ajustes para a próxima iteração
-// void barreira(int pid) {
-//     int i;
-//     pthread_mutex_lock(&mutex);
-//     threadsExecutaram++;
-//     if(threadsExecutaram < nthreads){
-//         printf("Thread %d se travou esperando as outras acabarem de calcular integral\n", pid);
-//         pthread_cond_wait(&cond_barreira, &mutex);
-//     }else{
-//         // Zera os valores da última iteração
-//         threadsExecutaram=0;
-//         integralIteracao = 0;
-
-//         // Calcula o valor da integral atual percorrendo o vetor de integrais parciais
-//         for (i = 0; i < nthreads; i++)
-//         {
-//             integralIteracao += vetorIntegral[i];
-//         }
-
-
-//         imprime_vetor_double(vetorIntegral, nthreads);
-//         printf("---------- Integral Iteracao: %f \n", integralIteracao);
-
-//         // Calcula o erro na iteração atual
-//         erroIteracaoAtual = fabs(resultadoIntegral - integralIteracao);
-
-//         // Atualiza a integral final com o valor da interação atual.
-//         resultadoIntegral = integralIteracao;
-
-//         // Dobra o número de partições para a próxima iteração
-//         nparticoes = 2 * nparticoes;
-
-//         // Atualiza o valor do tamanho de cada intervalo de integração
-//         tamanhoParticao = (b - a)/nparticoes;
-
-//         // Atualiza o vetor de partições com os intervalos finais de cada partição
-//         preenche_vetor_particoes();
-
-//         printf("---------- Erro Iteracao: %f \n", erroIteracaoAtual );
-//         printf("Thread %d liberou todas as outras threads\n", pid);
-
-//             pthread_cond_broadcast(&cond_barreira);
-//     }
-//     pthread_mutex_unlock(&mutex);
-// }
+int verifica_thread_travadas(){
+    pthread_mutex_lock(&mutexTravadas);
+    if(threadsTravadas == nthreads - 1)
+        return 1;
+    else
+        return 0;
+    pthread_mutex_unlock(&mutexTravadas);
+}
 
 void * threads_integral (void* arg){
     // Descobre o pid da thread
     int* p = (int *) arg;
     int pid = * p;
-    tarefa* t;
+    tarefa t1, t2;
 
-    int i;
-    double erroIteracaoAtual = 0, integralLocal, integralEsquerda = 0, integralDireita = 0, intervalo;
+    double erroIteracaoAtual = DBL_MAX, integralLocal, integralEsquerda = 0, integralDireita = 0, intervalo;
 
     printf("-- Thread %d criada!\n", pid);
 
     // Enquanto o erro da iteração for maior que o erro máximo, calcula a integral mais uma vez
-    pthread_mutex_lock(&mutex);
-    while(qtdTarefas > 0){
-        pthread_mutex_unlock(&mutex);
-        t1 = retira_tarefa();
-        
-        while(erroIteracaoAtual < erroMaximo){
-            integralEsquerda = 0;
-            integralDireita = 0;
-            integralLocal = 0;
+    while(flagAcabou){
+        printf("Thread %d entrou no while \n", pid);
+        pthread_mutex_lock(&mutexQtdTarefas);
+        printf("Thread %d lockou pra ler o n de tarefas \n", pid);
+        if(qtdTarefas > 0){
+            printf("Thread %d achou %d tarefas \n", pid ,qtdTarefas);    
+            t1 = retira_tarefa();
+            pthread_mutex_unlock(&mutexQtdTarefas);
+            printf("Thread %d , T1 safado: %f \n", pid, t1.b );
+            while(erroIteracaoAtual > erroMaximo){
+                printf("---- Thread %d entrou pra calcular\n", pid);
+                integralEsquerda = 0;
+                integralDireita = 0;
+                integralLocal = 0;
                 
-            if (t1 != NULL){
-                intervalo = (t1->b - t1->a);
-                integralEsquerda = calcula_integral(t1->a, intervalo + t1->a);
-                integralDireita = calcula_integral(intervalo + t1->a , t1->b);
+                intervalo = (t1.b - t1.a);
+                printf("--- Thread %d intervalo da vez: %f \n", pid, intervalo );
+                integralEsquerda = calcula_integral(t1.a, intervalo + t1.a);
+                integralDireita = calcula_integral(intervalo + t1.a , t1.b);
                 integralLocal = integralDireita + integralEsquerda;
-                erroIteracaoAtual = t1->area - integralLocal;
+                erroIteracaoAtual = t1.area - integralLocal;
+                printf("---- Thread %d  integralLocal:%f erroIteracaoAtual: %f\n",pid,integralLocal,erroIteracaoAtual );
                 if(erroIteracaoAtual < erroMaximo){
                     pthread_mutex_lock(&mutexIntegral);
                     resultadoIntegral += integralLocal;
+                    erroIteracaoAtual = DBL_MAX;
                     pthread_mutex_unlock(&mutexIntegral);
                 }else{
-                    t1 = cria_tarefa(t1->a, intervalo + t1->a, integralEsquerda);
-                    t2 = cria_tarefa(intervalo + t1->a , t1->b, integralDireita);
+                    t1 = cria_tarefa(t1.a, intervalo + t1.a, integralEsquerda);
+                    t2 = cria_tarefa(intervalo + t1.a , t1.b, integralDireita);
                     insere_tarefa(t2);
                 }
-            } //ToDO: TRATAR
+            }
+        }else if(verifica_thread_travadas()){
+            pthread_mutex_unlock(&mutexQtdTarefas);
+
+            flagAcabou = 0;
+            pthread_cond_broadcast(&condPodeConsumir);
+            break;
+        }else{
+            pthread_mutex_unlock(&mutexQtdTarefas);
+            printf("Thread %d não pegou nenhuma tarefa, vai se travar\n", pid );
+            pthread_mutex_lock(&mutexTravadas);
+            threadsTravadas++;
+            printf("Thread %d , somos o bonde das threads travadas n:%d \n",pid,threadsTravadas );
+            pthread_cond_wait(&condPodeConsumir, &mutexTravadas);
         }
     }
-
     pthread_exit(NULL);
 }
 
@@ -278,7 +228,7 @@ int main(int argc, char *argv[]){
     integralInicial = calcula_integral(a,b);
 
     // Preenche o vetor de tarefas pela primeira vez
-    init_tarefas(a, b, integralInicial);
+    inicia_tarefa(a, b, integralInicial);
 
     //GET_TIME(fim);
     //tempoInicializacao = fim - inicio;
