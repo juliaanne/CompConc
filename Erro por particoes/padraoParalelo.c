@@ -90,7 +90,6 @@ void inicia_tarefa(double a, double b, double area){
 
     insere_tarefa(t1);
     insere_tarefa(t2);
-
 }
 
 // Calculo da integral
