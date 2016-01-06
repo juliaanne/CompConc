@@ -1,0 +1,255 @@
+Criada thread id: 0
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 2 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [1.000000, 2.000000]
+VetorTarefas: 
+Criada thread id: 1
+Criada thread id: 2
+Sou a thread 2 e controladora vale 1
+Sou a thread 1 e controladora vale 1
+[ a=0.000000, b=1.000000 | area=1.030776 ] 
+
+Criada thread id: 3
+Sou a thread 3 e controladora vale 1
+Eu, thread 3, vou pegar uma tarefa das 1 tarefas!
+Eu, thread 3, peguei uma tarefa! Correponde a [0.000000, 1.000000]
+VetorTarefas: 
+VAZIO
+Eu, thread 0, agora sei que areaTotal: 2.538367
+Eu, thread 1, verifiquei que o numTarefas é 0.
+Eu, thread 1, vou me bloquear. O threadsTravadas 1 não é igual a n threads! 
+Eu, thread 0, calculei o erroIteracaoAtual: 0.076152
+Eu, a thread 0, sei que o erroIteracaoAtual 0.076152  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 0, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 2 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [1.500000, 2.000000]
+Eu, thread 0, sou a ultima thread e há 1 tarefas. Vou sinalizar!
+Eu, thread 3, agora sei que areaTotal: 1.074649
+Eu, thread 3, calculei o erroIteracaoAtual: 0.043873
+Eu, a thread 3, sei que o erroIteracaoAtual 0.043873  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 3, inseri tEsquerda e tDireita no vetorTarefas!
+VetorTarefas: 
+[ a=1.000000, b=1.500000 | area=0.927551 ] 
+
+Eu, thread 0, agora sei que areaTotal: 1.619678
+Eu, thread 0, calculei o erroIteracaoAtual: 0.008863
+Eu, a thread 0, sei que o erroIteracaoAtual 0.008863  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 0, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 2, vou pegar uma tarefa das 1 tarefas!
+Eu, thread 2, peguei uma tarefa! Correponde a [1.000000, 1.500000]
+VetorTarefas: 
+VAZIO
+Eu, thread 2, agora sei que areaTotal: 0.937953
+Eu, thread 2, calculei o erroIteracaoAtual: 0.010401
+Eu, a thread 2, sei que o erroIteracaoAtual 0.010401  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 2, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 1, fui sinalizada. E vou pegar uma tarefa das 0 tarefas
+Eu, thread 1, peguei uma tarefa! Correponde a [0.000000, 0.000000]
+VetorTarefas: 
+
+Eu, thread 3, liberei e vou partir pra outra! Já calculei.
+Sou a thread 3 e controladora vale 1
+Eu, thread 3, vou pegar uma tarefa das 3 tarefas!
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Eu, thread 1, agora sei que areaTotal: -0.000000
+Eu, thread 1, calculei o erroIteracaoAtual: 0.000000
+Eu, thread 3, peguei uma tarefa! Correponde a [1.750000, 2.000000]
+Eu, a thread 1, sei que o erroIteracaoAtual 0.000000 está bom. Vou terminar.
+Sou a thread 0 e controladora vale 1
+Eu, a thread 1, antes de terminar, digo que resultadoIntegral é -0.000000
+Eu, thread 1, liberei e vou partir pra outra! Já calculei.
+Eu, thread 3, sou a ultima thread e há 2 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=0.500000, b=1.000000 | area=0.573674 ] 
+[ a=1.500000, b=1.750000 | area=0.705908 ] 
+
+Sou a thread 1 e controladora vale 1
+Eu, thread 1, vou pegar uma tarefa das 2 tarefas!
+Eu, thread 1, peguei uma tarefa! Correponde a [1.500000, 1.750000]
+Eu, thread 1, sou a ultima thread e há 1 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=0.500000, b=1.000000 | area=0.573674 ] 
+
+Eu, thread 1, agora sei que areaTotal: 0.707051
+Eu, thread 1, calculei o erroIteracaoAtual: 0.001143
+Eu, thread 0, vou pegar uma tarefa das 1 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [0.500000, 1.000000]
+VetorTarefas: 
+VAZIO
+Eu, a thread 1, sei que o erroIteracaoAtual 0.001143  > erroMaximo 0.001000. Vou dividir mais!
+Eu, thread 2, liberei e vou partir pra outra! Já calculei.
+Eu, a thread 1, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 1, liberei e vou partir pra outra! Já calculei.
+Sou a thread 1 e controladora vale 1
+Eu, thread 1, vou pegar uma tarefa das 4 tarefas!
+Eu, thread 3, agora sei que areaTotal: 0.914850
+Eu, thread 3, calculei o erroIteracaoAtual: 0.001080
+Eu, a thread 3, sei que o erroIteracaoAtual 0.001080  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 3, inseri tEsquerda e tDireita no vetorTarefas!
+Sou a thread 2 e controladora vale 1
+Eu, thread 0, agora sei que areaTotal: 0.583256
+Eu, thread 0, calculei o erroIteracaoAtual: 0.009582
+Eu, a thread 0, sei que o erroIteracaoAtual 0.009582  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 0, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 1, peguei uma tarefa! Correponde a [1.625000, 1.750000]
+Eu, thread 1, sou a ultima thread e há 3 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+[ a=1.500000, b=1.625000 | area=0.329784 ] 
+
+Eu, thread 1, agora sei que areaTotal: 0.377407
+Eu, thread 1, calculei o erroIteracaoAtual: 0.000140
+Eu, thread 3, liberei e vou partir pra outra! Já calculei.
+Eu, thread 2, vou pegar uma tarefa das 5 tarefas!
+Eu, thread 2, peguei uma tarefa! Correponde a [1.875000, 2.000000]
+Sou a thread 3 e controladora vale 1
+Eu, a thread 1, sei que o erroIteracaoAtual 0.000140 está bom. Vou terminar.
+Eu, a thread 1, antes de terminar, digo que resultadoIntegral é 0.377407
+Eu, thread 1, liberei e vou partir pra outra! Já calculei.
+Sou a thread 1 e controladora vale 1
+Eu, thread 2, sou a ultima thread e há 4 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+[ a=1.500000, b=1.625000 | area=0.329784 ] 
+[ a=1.750000, b=1.875000 | area=0.429248 ] 
+
+Eu, thread 2, agora sei que areaTotal: 0.485736
+Eu, thread 2, calculei o erroIteracaoAtual: 0.000134
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 6 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [0.750000, 1.000000]
+Eu, thread 0, sou a ultima thread e há 5 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+[ a=1.500000, b=1.625000 | area=0.329784 ] 
+Eu, a thread 2, sei que o erroIteracaoAtual 0.000134 está bom. Vou terminar.
+Eu, a thread 2, antes de terminar, digo que resultadoIntegral é 0.863143
+Eu, thread 2, liberei e vou partir pra outra! Já calculei.
+Sou a thread 2 e controladora vale 1
+[ a=1.750000, b=1.875000 | area=0.429248 ] 
+[ a=0.500000, b=0.750000 | area=0.268397 ] 
+
+Eu, thread 0, agora sei que areaTotal: 0.316199
+Eu, thread 0, calculei o erroIteracaoAtual: 0.001340
+Eu, a thread 0, sei que o erroIteracaoAtual 0.001340  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 0, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 1, vou pegar uma tarefa das 5 tarefas!
+Eu, thread 1, peguei uma tarefa! Correponde a [0.500000, 0.750000]
+Eu, thread 1, sou a ultima thread e há 4 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+[ a=1.500000, b=1.625000 | area=0.329784 ] 
+[ a=1.750000, b=1.875000 | area=0.429248 ] 
+
+Eu, thread 1, agora sei que areaTotal: 0.269367
+Eu, thread 3, vou pegar uma tarefa das 4 tarefas!
+Eu, thread 3, peguei uma tarefa! Correponde a [1.750000, 1.875000]
+Eu, thread 3, sou a ultima thread e há 3 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+[ a=1.500000, b=1.625000 | area=0.329784 ] 
+
+Eu, thread 1, calculei o erroIteracaoAtual: 0.000971
+Eu, thread 2, vou pegar uma tarefa das 3 tarefas!
+Eu, thread 2, peguei uma tarefa! Correponde a [1.500000, 1.625000]
+Eu, thread 3, agora sei que areaTotal: 0.429385
+Eu, thread 3, calculei o erroIteracaoAtual: 0.000137
+Eu, a thread 1, sei que o erroIteracaoAtual 0.000971 está bom. Vou terminar.
+Eu, thread 2, sou a ultima thread e há 2 tarefas. Vou sinalizar!
+VetorTarefas: 
+Eu, a thread 1, antes de terminar, digo que resultadoIntegral é 1.132511
+Eu, a thread 3, sei que o erroIteracaoAtual 0.000137 está bom. Vou terminar.
+Eu, thread 1, liberei e vou partir pra outra! Já calculei.
+Eu, a thread 3, antes de terminar, digo que resultadoIntegral é 1.561895
+Eu, thread 3, liberei e vou partir pra outra! Já calculei.
+Sou a thread 3 e controladora vale 1
+Sou a thread 1 e controladora vale 1
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 4 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [0.875000, 1.000000]
+Eu, thread 0, sou a ultima thread e há 3 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+[ a=0.750000, b=0.875000 | area=0.149781 ] 
+
+Eu, thread 0, agora sei que areaTotal: 0.166589
+Eu, thread 0, calculei o erroIteracaoAtual: 0.000171
+Eu, a thread 0, sei que o erroIteracaoAtual 0.000171 está bom. Vou terminar.
+Eu, a thread 0, antes de terminar, digo que resultadoIntegral é 1.728485
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 3 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [0.750000, 0.875000]
+Eu, thread 0, sou a ultima thread e há 2 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.500000 | area=0.534700 ] 
+
+Eu, thread 0, agora sei que areaTotal: 0.149942
+Eu, thread 0, calculei o erroIteracaoAtual: 0.000161
+Eu, a thread 0, sei que o erroIteracaoAtual 0.000161 está bom. Vou terminar.
+Eu, a thread 0, antes de terminar, digo que resultadoIntegral é 1.878427
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 2 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [1.250000, 1.500000]
+Eu, thread 0, sou a ultima thread e há 1 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+
+Eu, thread 0, agora sei que areaTotal: 0.535941
+Eu, thread 0, calculei o erroIteracaoAtual: 0.001241
+Eu, a thread 0, sei que o erroIteracaoAtual 0.001241  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 0, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 3 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [1.375000, 1.500000]
+Eu, thread 0, sou a ultima thread e há 2 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+[ a=1.250000, b=1.375000 | area=0.248984 ] 
+
+Eu, thread 0, agora sei que areaTotal: 0.287109
+Eu, thread 0, calculei o erroIteracaoAtual: 0.000152
+Eu, a thread 0, sei que o erroIteracaoAtual 0.000152 está bom. Vou terminar.
+Eu, a thread 0, antes de terminar, digo que resultadoIntegral é 2.165536
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 2 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [1.250000, 1.375000]
+Eu, thread 0, sou a ultima thread e há 1 tarefas. Vou sinalizar!
+VetorTarefas: 
+[ a=1.000000, b=1.250000 | area=0.403253 ] 
+
+Eu, thread 0, agora sei que areaTotal: 0.249142
+Eu, thread 0, calculei o erroIteracaoAtual: 0.000159
+Eu, a thread 0, sei que o erroIteracaoAtual 0.000159 está bom. Vou terminar.
+Eu, a thread 0, antes de terminar, digo que resultadoIntegral é 2.414678
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 1 tarefas!
+Eu, thread 0, peguei uma tarefa! Correponde a [1.000000, 1.250000]
+VetorTarefas: 
+VAZIO
+Eu, thread 0, agora sei que areaTotal: 0.404608
+Eu, thread 0, calculei o erroIteracaoAtual: 0.001355
+Eu, a thread 0, sei que o erroIteracaoAtual 0.001355  > erroMaximo 0.001000. Vou dividir mais!
+Eu, a thread 0, inseri tEsquerda e tDireita no vetorTarefas!
+Eu, thread 0, liberei e vou partir pra outra! Já calculei.
+Sou a thread 0 e controladora vale 1
+Eu, thread 0, vou pegar uma tarefa das 2 tarefas!
+Eu, thread 0, peguei uma taref
