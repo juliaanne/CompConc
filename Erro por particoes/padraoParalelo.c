@@ -176,7 +176,7 @@ void * threads_integral (void* arg){
                     pthread_mutex_lock(&mutexIntegral);
                     resultadoIntegral += integralLocal;
                     vetorBalanceamento[pid] += 1;
-                    //imprime_vetor_int(vetorBalanceamento,nthreads);
+                    imprime_vetor_int(vetorBalanceamento,nthreads);
                     // printf("Resultado integral é: %f\n", resultadoIntegral);
                     erroIteracaoAtual = DBL_MAX;
                     pthread_mutex_unlock(&mutexIntegral);
@@ -301,6 +301,12 @@ int main(int argc, char *argv[]){
     //printf("Número de threads é: %d\n", nthreads);
     printf("Resultado integral  é: %.8lf\n\n", resultadoIntegral);
     imprime_vetor_int(vetorBalanceamento,nthreads);
+    int vezesQueCalculouIntegral = 0;
+    for (i = 0; i < nthreads; ++i)
+    {
+        vezesQueCalculouIntegral += vetorBalanceamento[i];
+    }
+    printf("Calculei %d pedaços de integral\n", vezesQueCalculouIntegral);
     //printf("Tempo de inicialização é: %.8lf\n", tempoInicializacao);
     //printf("Tempo de execução é: %.8lf\n", tempoExecucao);
     //printf("Tempo total é: %.8lf\n", tempoExecucao+tempoInicializacao);
